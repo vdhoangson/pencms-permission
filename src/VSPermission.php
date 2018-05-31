@@ -56,6 +56,7 @@ class VSPermission {
     
     private function cachePermission($role){
         $permissionTable = DB::table('permission')->whereIn('id', explode(',', $role->permissions))->get();
+        
         foreach($permissionTable as $per){
             $this->permissions[] = $per->slug;
         }

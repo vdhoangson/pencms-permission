@@ -10,8 +10,7 @@ namespace vdhoangson\Permission;
 
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
-use Route;
-use VSPermission;
+use VSPermission, Route;
 
 class VSPermissionMiddleware {
     protected $auth;
@@ -32,8 +31,12 @@ class VSPermissionMiddleware {
     public function handle($request, Closure $next) {
         $currentRoute = Route::currentRouteName();
         
+        if(!$this->auth->check()){
+            return response()->redirect()->route('login');
+        }
+
         if (!VSPermission::checkAccess($currentRoute)) {
-            abort(403, 'Unauthorized action.');
+            return response()->view('error.permission');
         }
 
         return $next($request);
